@@ -35,6 +35,7 @@ from resilient_client import (
 from resilient_client.clock import Clock, SystemClock
 
 from brstatus.services import Service
+from brstatus.text import clip
 
 UP = "up"
 DEGRADED = "degraded"
@@ -119,7 +120,7 @@ def probe(
         return sample(DOWN, "json", latency=False)
     problem = service.validate(payload)
     if problem:
-        return sample(DOWN, f"payload:{problem}", latency=False)
+        return sample(DOWN, f"payload:{clip(problem)}", latency=False)
 
     result = sample(UP, None)
     if retries:

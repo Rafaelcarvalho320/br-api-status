@@ -171,3 +171,21 @@ def test_retry_policy_is_bounded():
     policy: RetryPolicy = fetch._client._retry
     assert policy.max_attempts <= 3
     fetch.close()
+
+
+def test_values_from_a_source_are_bounded_before_they_are_stored(clock):
+    huge = "x" * 100_000
+    script = cep_script(brasilapi_over={"66075110": {"neighborhood": huge}})
+    fetch, _ = fetcher(clock, script)
+    result = run_comparison(BY_ID["cep-viacep-brasilapi"], fetch, NOW)
+    [row] = result["details"]
+    assert len(row["right"]) == 160
+    assert row["right"].endswith("…")
+
+
+def test_not_modified_is_a_source_failure_not_bad_json(clock):
+    ibge = "https://servicodados.ibge.gov.br/api/v1/localidades/estados"
+    fetch, _ = fetcher(clock, {ibge: [Reply(status=304)]})
+    result = run_comparison(BY_ID["uf-ibge-brasilapi"], fetch, NOW)
+    assert result["status"] == "inconclusive"
+    assert result["error"].endswith("HTTP 304")

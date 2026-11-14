@@ -28,6 +28,7 @@ from resilient_client import (
 )
 
 from brstatus.probe import USER_AGENT
+from brstatus.text import clip
 
 #: CEPs compared across providers. Chosen to cover several states and kinds of
 #: address; 40020-000 (Rua Chile, Salvador) is known to be missing from one of
@@ -62,7 +63,7 @@ class Fetcher:
             raise SourceUnavailable(f"{url}: {type(exc).__name__}") from exc
         if response.status_code in (400, 404):
             return None
-        if not response.ok:
+        if not 200 <= response.status_code < 300:
             raise SourceUnavailable(f"{url}: HTTP {response.status_code}")
         try:
             return response.json()
@@ -288,7 +289,12 @@ def run_comparison(
         left = list(comparison.left(fetch))
         right = list(comparison.right(fetch))
     except SourceUnavailable as exc:
-        return {**base, "status": "inconclusive", "error": str(exc), "details": []}
+        return {
+            **base,
+            "status": "inconclusive",
+            "error": clip(str(exc)),
+            "details": [],
+        }
 
     result = reconcile(
         left,
@@ -313,6 +319,10 @@ def run_comparison(
 
 def _keys(records: Iterable[Record], schema: Schema) -> set[str]:
     return {format_key(k) for r in records if (k := schema.key_of(r)) is not None}
+
+
+#: Divergence rows kept per comparison; the page shows the first few.
+MAX_DETAILS = 20
 
 
 def describe(result: Reconciliation) -> list[dict[str, Any]]:
@@ -353,7 +363,9 @@ def describe(result: Reconciliation) -> list[dict[str, Any]]:
         ("unkeyed_right", result.unkeyed_right),
     ):
         rows.extend({"kind": kind, "key": "?", "reason": u.reason} for u in unkeyed)
-    return rows
+    # Keys and values are what the APIs sent: bounded in size and in number
+    # before they reach the published state file. ``problems`` keeps the count.
+    return [{k: clip(v) for k, v in row.items()} for row in rows[:MAX_DETAILS]]
 
 
 def run_all(

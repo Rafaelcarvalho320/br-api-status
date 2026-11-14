@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>Status das APIs públicas brasileiras</title>
   <meta name="description" content="Disponibilidade, latência e conferência entre fontes das APIs públicas brasileiras: BrasilAPI, ViaCEP, OpenCEP, IBGE, Banco Central, AwesomeAPI e FIPE.">
   <meta name="theme-color" content="#09090b">
@@ -10,7 +11,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2309090b'/%3E%3Crect x='8' y='13' width='4' height='11' rx='2' fill='%23fafafa'/%3E%3Crect x='14' y='9' width='4' height='15' rx='2' fill='%23fafafa'/%3E%3Crect x='20' y='6' width='4' height='18' rx='2' fill='%2322c55e'/%3E%3C/svg%3E">
   <link rel="preload" href="fonts/geist-variable-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
-  <script>try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="theme.js"></script>
 </head>
 <body data-state="loading">
   <a class="skip" href="#servicos">Pular para a lista de serviços</a>
@@ -125,7 +126,7 @@
 
   <div id="tip" class="tip" role="tooltip" hidden></div>
 
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <svg class="sprite" width="0" height="0" aria-hidden="true">
     <symbol id="ic-logo" viewBox="0 0 20 20"><rect x="3" y="9" width="3.2" height="8" rx="1.6" fill="currentColor"/><rect x="8.4" y="6" width="3.2" height="11" rx="1.6" fill="currentColor"/><rect x="13.8" y="3" width="3.2" height="14" rx="1.6" fill="var(--good)"/></symbol>
     <symbol id="ic-check" viewBox="0 0 20 20"><path d="M5.5 10.4l3 3 6-6.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="ic-alert" viewBox="0 0 20 20"><path d="M10 5.5v5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="10" cy="14.4" r="1.3" fill="currentColor"/></symbol>

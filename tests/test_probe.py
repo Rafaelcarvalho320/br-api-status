@@ -117,3 +117,18 @@ def test_empty_not_modified_is_an_http_failure_not_bad_json(clock):
     sample, transport = run(clock, Reply(status=304, raw=b""))
     assert (sample.status, sample.reason) == (DOWN, "http:304")
     assert len(transport.calls) == 1
+
+
+def test_a_huge_validation_message_is_clipped_before_it_is_stored(clock):
+    service = Service(
+        id="example",
+        name="CEP",
+        provider="Example",
+        url=URL,
+        validate=lambda p: f"uf={p['uf']!r}",
+        docs="https://example",
+    )
+    sample, _ = run(clock, Reply({"uf": "P" * 100_000}), service=service)
+    assert sample.status == DOWN
+    assert sample.reason.startswith("payload:uf='PPP")
+    assert len(sample.reason) == len("payload:") + 160

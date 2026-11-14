@@ -94,6 +94,14 @@ GitHub Actions (cron, ~15 min)
 - **A página é HTML, CSS e JS puros**, sem framework nem build. Ela lê
   `data/status.json`, se atualiza a cada 5 minutos e avisa quando o
   agendamento do GitHub atrasou e os dados podem estar velhos.
+- **O que vem das APIs é tratado como não confiável.** Todo texto é escapado
+  antes de entrar no HTML, valores citados no `status.json` são limitados a
+  160 caracteres e a página tem uma Content Security Policy que só aceita
+  scripts, estilos e conexões da própria origem.
+- **O token que escreve no repositório nunca roda junto com código de
+  terceiros.** O job que instala pacotes e lê as respostas das APIs tem
+  permissão só de leitura; o que faz o push do branch `data` e publica a página
+  não instala nada. As actions são fixadas por hash de commit.
 - **Tema claro e escuro.** A página segue o sistema por padrão e lembra a
   escolha de quem usa o botão de tema. O brilho no topo assume a cor do status
   geral: verde, âmbar ou vermelho.
