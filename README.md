@@ -9,6 +9,10 @@ integração: **BrasilAPI, ViaCEP, OpenCEP, IBGE, Banco Central, AwesomeAPI e
 FIPE**. Mostra disponibilidade, latência e incidentes e, além disso, confere
 se as fontes que publicam o mesmo dado **concordam entre si**.
 
+A rede aparece como um mapa de metrô: cada provedor é uma linha, cada
+endpoint é uma estação, e as **baldeações** são os pontos onde duas fontes
+publicam o mesmo dado e as respostas são comparadas.
+
 **Ao vivo:** https://rafaelcarvalho320.github.io/br-api-status/
 
 Não tem servidor, banco nem custo. Um workflow do GitHub Actions roda a cada
@@ -69,7 +73,7 @@ nas sondas.
 ```
 GitHub Actions (cron, ~15 min)
   ├─ restaura status.json do branch `data`
-  ├─ python -m brstatus     → 12 sondas + 5 comparações
+  ├─ python -m brstatus     → 15 sondas + 5 comparações
   ├─ grava status.json no branch `data` (commit único, force-push)
   └─ publica site/ + status.json no GitHub Pages
 ```
@@ -88,12 +92,18 @@ GitHub Actions (cron, ~15 min)
   últimos 20 incidentes por serviço. Fica em torno de 150 KB.
 - **Os dias são contados no horário de Brasília**, porque "ontem", numa
   página sobre serviços brasileiros, é o ontem brasileiro.
-- **As sondas rodam em sequência, não em paralelo.** Em paralelo, os doze
-  handshakes TLS disputavam a CPU e todas as latências saíam ~3× maiores que
+- **As sondas rodam em sequência, não em paralelo.** Em paralelo, os
+  handshakes TLS simultâneos disputavam a CPU e todas as latências saíam ~3× maiores que
   as reais.
 - **A página é HTML, CSS e JS puros**, sem framework nem build. Ela lê
   `data/status.json`, se atualiza a cada 5 minutos e avisa quando o
   agendamento do GitHub atrasou e os dados podem estar velhos.
+- **O mapa é desenhado à mão, não calculado.** Um esquema fixo lê melhor do
+  que qualquer layout automático, e o catálogo muda pouco. Um serviço novo
+  aparece na tabela mesmo antes de ganhar sua estação no mapa.
+- **A fonte é a [Overpass](https://github.com/RedHatOfficial/Overpass)**
+  (OFL), derivada da tipografia de sinalização viária e hospedada no próprio
+  site, sem CDN de terceiros.
 
 **Limitação honesta:** os runners do GitHub ficam nos EUA. A latência inclui
 a viagem até o Brasil e serve para ver tendência, não para medir a
@@ -105,8 +115,8 @@ experiência de quem está no país.
 $ python -m venv .venv && . .venv/bin/activate
 $ pip install -e ".[dev]"
 $ python -m brstatus --state site/data/status.json
-up          688 ms  brasilapi-cep
-up          656 ms  brasilapi-cnpj
+up          782 ms  brasilapi-cep
+up          687 ms  brasilapi-cnpj
 ...
 divergent    cep-viacep-brasilapi  1
 consistent   uf-ibge-brasilapi  0
@@ -143,7 +153,9 @@ precisa ser o serviço, não a amostra que ficou velha.
 
 A public status page for the Brazilian public APIs that integrations rely on
 (BrasilAPI, ViaCEP, OpenCEP, IBGE, Banco Central, AwesomeAPI, FIPE), run
-entirely on GitHub Actions and GitHub Pages at zero cost.
+entirely on GitHub Actions and GitHub Pages at zero cost. The network is drawn
+as a transit map: providers are lines, endpoints are stations, and the
+interchanges are where two sources publish the same fact and get reconciled.
 
 Beyond uptime and latency, it checks **cross-source consistency**: when two
 APIs publish the same fact (a CEP's address, the list of states, the Selic
