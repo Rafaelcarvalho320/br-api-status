@@ -9,10 +9,6 @@ integração: **BrasilAPI, ViaCEP, OpenCEP, IBGE, Banco Central, AwesomeAPI e
 FIPE**. Mostra disponibilidade, latência e incidentes e, além disso, confere
 se as fontes que publicam o mesmo dado **concordam entre si**.
 
-A rede aparece como um mapa de metrô: cada provedor é uma linha, cada
-endpoint é uma estação, e as **baldeações** são os pontos onde duas fontes
-publicam o mesmo dado e as respostas são comparadas.
-
 **Ao vivo:** https://rafaelcarvalho320.github.io/br-api-status/
 
 Não tem servidor, banco nem custo. Um workflow do GitHub Actions roda a cada
@@ -98,12 +94,12 @@ GitHub Actions (cron, ~15 min)
 - **A página é HTML, CSS e JS puros**, sem framework nem build. Ela lê
   `data/status.json`, se atualiza a cada 5 minutos e avisa quando o
   agendamento do GitHub atrasou e os dados podem estar velhos.
-- **O mapa é desenhado à mão, não calculado.** Um esquema fixo lê melhor do
-  que qualquer layout automático, e o catálogo muda pouco. Um serviço novo
-  aparece na tabela mesmo antes de ganhar sua estação no mapa.
-- **A fonte é a [Overpass](https://github.com/RedHatOfficial/Overpass)**
-  (OFL), derivada da tipografia de sinalização viária e hospedada no próprio
-  site, sem CDN de terceiros.
+- **Tema claro e escuro.** A página segue o sistema por padrão e lembra a
+  escolha de quem usa o botão de tema. O brilho no topo assume a cor do status
+  geral: verde, âmbar ou vermelho.
+- **As fontes são [Geist e Geist Mono](https://github.com/vercel/geist-font)**
+  (OFL), reduzidas ao alfabeto latino e hospedadas no próprio site, sem CDN
+  de terceiros.
 
 **Limitação honesta:** os runners do GitHub ficam nos EUA. A latência inclui
 a viagem até o Brasil e serve para ver tendência, não para medir a
@@ -153,9 +149,8 @@ precisa ser o serviço, não a amostra que ficou velha.
 
 A public status page for the Brazilian public APIs that integrations rely on
 (BrasilAPI, ViaCEP, OpenCEP, IBGE, Banco Central, AwesomeAPI, FIPE), run
-entirely on GitHub Actions and GitHub Pages at zero cost. The network is drawn
-as a transit map: providers are lines, endpoints are stations, and the
-interchanges are where two sources publish the same fact and get reconciled.
+entirely on GitHub Actions and GitHub Pages at zero cost. The front end is
+plain HTML, CSS and JS with light and dark themes and self-hosted Geist fonts.
 
 Beyond uptime and latency, it checks **cross-source consistency**: when two
 APIs publish the same fact (a CEP's address, the list of states, the Selic
