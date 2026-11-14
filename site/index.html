@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Status das APIs públicas brasileiras</title>
+  <meta name="description" content="Disponibilidade, latência e consistência entre fontes das principais APIs públicas brasileiras: BrasilAPI, ViaCEP, IBGE, Banco Central e outras.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6' fill='%230ca30c'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#servicos">Pular para os serviços</a>
+  <header class="wrap">
+    <p class="eyebrow">Monitor independente</p>
+    <h1>Status das APIs públicas brasileiras</h1>
+    <p class="lede">Uma verificação real a cada ~15 minutos em BrasilAPI, ViaCEP, OpenCEP, IBGE, Banco Central, AwesomeAPI e FIPE. A página também confere se as fontes que publicam o mesmo dado concordam entre si.</p>
+    <p class="updated" id="updated" aria-live="polite">Carregando…</p>
+  </header>
+
+  <main class="wrap">
+    <section id="summary" class="summary" aria-live="polite"></section>
+
+    <section aria-labelledby="servicos" class="block">
+      <div class="block-head">
+        <h2 id="servicos">Serviços</h2>
+        <ul class="legend" aria-label="Legenda das barras diárias">
+          <li><span class="sw sw-good"></span>Sem falhas</li>
+          <li><span class="sw sw-warning"></span>Lento ou falha parcial</li>
+          <li><span class="sw sw-critical"></span>Fora do ar &gt; 5% do dia</li>
+          <li><span class="sw sw-empty"></span>Sem dados</li>
+        </ul>
+      </div>
+      <div id="services" class="services"></div>
+    </section>
+
+    <section aria-labelledby="consistencia" class="block">
+      <div class="block-head">
+        <h2 id="consistencia">Consistência entre fontes</h2>
+      </div>
+      <p class="note">Estar no ar não basta: a resposta também precisa estar certa. Quando duas APIs publicam o mesmo dado, as duas são comparadas campo a campo, ignorando acentos e maiúsculas. Quando uma fonte não responde, a comparação fica <em>inconclusiva</em> e não conta como divergência.</p>
+      <div id="consistency" class="consistency"></div>
+    </section>
+
+    <section aria-labelledby="incidentes" class="block">
+      <div class="block-head">
+        <h2 id="incidentes">Incidentes recentes</h2>
+      </div>
+      <div id="incidents"></div>
+    </section>
+
+    <section aria-labelledby="metodo" class="block method">
+      <h2 id="metodo">Como funciona</h2>
+      <dl>
+        <dt><span class="dot dot-good"></span>Operacional</dt>
+        <dd>Respondeu na primeira tentativa, em menos de 3 s, com um conteúdo que passa na validação. Não basta o HTTP 200: se o CEP da UFPA voltar sem a UF “PA”, conta como falha.</dd>
+        <dt><span class="dot dot-warning"></span>Lento</dt>
+        <dd>A resposta foi útil, mas só depois de uma nova tentativa ou acima de 3 s.</dd>
+        <dt><span class="dot dot-critical"></span>Fora do ar</dt>
+        <dd>Erro de rede, tempo esgotado (10 s), erro HTTP ou conteúdo inválido depois de até 3 tentativas com backoff exponencial.</dd>
+      </dl>
+      <p>As verificações rodam no GitHub Actions, a partir de servidores nos EUA. A latência inclui a viagem até o Brasil e serve para comparar tendências, não para medir a experiência de quem está no país. O agendamento do GitHub pode atrasar alguns minutos em horários de pico.</p>
+      <p>Construído sobre duas bibliotecas próprias: <a href="https://github.com/Rafaelcarvalho320/resilient-api-client">resilient-api-client</a> (timeout, retry com backoff e jitter) e <a href="https://github.com/Rafaelcarvalho320/reconciliation-report">reconciliation-report</a> (comparação chaveada entre fontes). Os dados brutos ficam em <a href="data/status.json">data/status.json</a>.</p>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <p>Feito por <a href="https://github.com/Rafaelcarvalho320">Rafael Penço de Carvalho</a> · <a href="https://github.com/Rafaelcarvalho320/br-api-status">código-fonte</a> · Projeto independente, sem vínculo com os serviços monitorados.</p>
+  </footer>
+
+  <div id="tip" class="tip" role="tooltip" hidden></div>
+  <script src="app.js" defer></script>
+</body>
+</html>

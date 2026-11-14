@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "br-api-status"
+version = "0.1.0"
+description = "Public status page for Brazilian public APIs: uptime, latency, incidents and cross-source consistency, run on GitHub Actions."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Rafael Penço de Carvalho", email = "102534725+Rafaelcarvalho320@users.noreply.github.com" }]
+keywords = ["status-page", "uptime", "monitoring", "brasil", "public-api"]
+dependencies = [
+    "resilient-api-client @ git+https://github.com/Rafaelcarvalho320/resilient-api-client@4805beaa2f02c68aeea062a44b6eae36b17ab603",
+    "reconciliation-report @ git+https://github.com/Rafaelcarvalho320/reconciliation-report@e674ec399d466b5d9cf31d3714d3f518e752844f",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[project.urls]
+Homepage = "https://github.com/Rafaelcarvalho320/br-api-status"
+Status = "https://rafaelcarvalho320.github.io/br-api-status/"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/brstatus"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+
+[tool.ruff]
+line-length = 88
+src = ["src", "tests"]
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
