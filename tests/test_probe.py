@@ -111,3 +111,9 @@ def test_catalog_validators(service_id, payload, ok):
 def test_service_ids_are_unique():
     ids = [s.id for s in SERVICES]
     assert len(ids) == len(set(ids))
+
+
+def test_empty_not_modified_is_an_http_failure_not_bad_json(clock):
+    sample, transport = run(clock, Reply(status=304, raw=b""))
+    assert (sample.status, sample.reason) == (DOWN, "http:304")
+    assert len(transport.calls) == 1

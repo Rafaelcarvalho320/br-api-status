@@ -109,7 +109,9 @@ def probe(
     except TransportError as exc:
         return sample(DOWN, _transport_reason(exc), latency=False)
 
-    if not response.ok:
+    # Only 2xx carries a usable body: an unconditional request answered with
+    # 304 Not Modified (seen on Banco Central SGS 432) is down, not "bad JSON".
+    if not 200 <= response.status_code < 300:
         return sample(DOWN, f"http:{response.status_code}", latency=False)
     try:
         payload = response.json()
